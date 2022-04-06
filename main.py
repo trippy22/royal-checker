@@ -3,6 +3,7 @@ import asyncio
 import sys
 import time
 import glob
+import util as u
 
 def run_async(callback):
     def inner(func):
@@ -17,7 +18,10 @@ def run_async(callback):
 
 
 def _callback(*args):
-    print(f'{args}')
+    ip = str(args).split("'")[1]
+    info = str(args).split("'")[3]
+    print(f'[{u.get_isp(ip)}] {ip} {info}')
+    #print(f'{args} {args[0]}')
 
 
 def get_proxy_dict(conn):
