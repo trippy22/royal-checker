@@ -1,6 +1,8 @@
 import requests
 import asyncio
 import sys
+import time
+import glob
 
 def run_async(callback):
     def inner(func):
@@ -32,9 +34,13 @@ def get(url, data):
 
 
 def main():
-    with open('Proxy_list.txt') as f:
-        lst = f.read().splitlines()
-        
+    files = glob.glob('*.txt')
+    lst = []
+    for fi in files:
+        with open(fi) as f:
+            lst += f.read().splitlines()
+            
+    lst = set(lst)
     for l, d in enumerate(lst):
         data = d
         if len(sys.argv) > 1:
