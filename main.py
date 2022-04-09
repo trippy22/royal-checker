@@ -20,7 +20,9 @@ def run_async(callback):
 def _callback(*args):
     ip = str(args).split("'")[1]
     info = str(args).split("'")[3]
-    print(f'[{u.get_isp(ip)}] {ip} {info}')
+    isp, connection = u.get_isp(ip)
+    connection = f'-[{connection}]' if 'n/a' not in connection else ''
+    print(f'[{isp}]{connection} {ip} {info}')
     #print(f'{args} {args[0]}')
 
 
@@ -48,7 +50,13 @@ def main():
     for l, d in enumerate(lst):
         data = d
         if len(sys.argv) > 1:
-            data = d.replace('streaming', 'direct')
+            setting = sys.argv[1]
+            if setting == 'd':
+                data = d.replace('streaming', 'direct')
+            elif setting == 'i':
+                data = d.replace('streaming', 'ispstatic')
+            elif setting == 'si':
+                data = d.replace('streaming', 'skipispstatic')
         get('http://whatismyip.akamai.com', data)
 
 
