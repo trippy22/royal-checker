@@ -14,7 +14,11 @@ def get_isp(ip_addr):
         return ISPS[ip_addr]
     r = requests.get(f'https://scamalytics.com/ip/{ip_addr}').text
     data = r.split('\n')
+    text1 = ''
+    text2 = ''
     for i, j in enumerate(data):
         if 'ISP Name' in j:
-            text = strip_html(data[i+2])
-            return text
+            text1 = strip_html(data[i+2])
+        if 'Connection type' in j:
+            text2 = strip_html(data[i+1])
+    return text1, text2
