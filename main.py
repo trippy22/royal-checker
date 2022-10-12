@@ -5,6 +5,8 @@ import time
 import glob
 import util as u
 
+LESS_PRINT = False
+
 def run_async(callback):
     def inner(func):
         def wrapper(*args, **kwargs):
@@ -20,9 +22,14 @@ def run_async(callback):
 def _callback(*args):
     ip = str(args).split("'")[1]
     info = str(args).split("'")[3]
+    response = str(args).split("'")[-1].lstrip(',').replace('),)', '').strip()
+    resp = ''
+    if response != -1:
+        resp = f'({response}s)'
     isp, connection = u.get_isp(ip)
     connection = f'-[{connection}]' if 'n/a' not in connection else ''
-    print(f'[{isp}]{connection} {ip} {info}')
+    if 'Error' not in ip:
+        print(f'[{isp}]{resp}{connection} {ip} {info}')
     #print(f'{args} {args[0]}')
 
 
@@ -32,10 +39,14 @@ def get_proxy_dict(conn):
 
 @run_async(_callback)
 def get(url, data):
+    tt = 20
+    if LESS_PRINT:
+        tt = 3
     try:
-        d = requests.get(url, timeout=20, proxies=get_proxy_dict(data)).text, data
+        response = requests.get(url, timeout=tt, proxies=get_proxy_dict(data))
+        d = response.text, data, round(response.elapsed.total_seconds(), 2)
     except Exception as e:
-        d = "Error connecting", data
+        d = "Error connecting", data, -1
     return d
 
 
