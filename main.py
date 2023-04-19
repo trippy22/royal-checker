@@ -18,16 +18,20 @@ def run_async(callback):
         return wrapper
     return inner
 
+
 def convert_proxy_format(proxy):
     if "@" in proxy:
         # The proxy is already in the desired format, return as is
         return proxy
     else:
         # Convert the proxy to the desired format
-        ip, port, username, password = proxy.split(":")
-        if port == '40000':
-            port = '50000'
-        return f"{username}:{password}@{ip}:{port}"
+        data = proxy.split(":")
+        if len(data) == 4:
+            ip, port, username, password = data
+            if port == '40000':
+                port = '50000'
+            return f"{username}:{password}@{ip}:{port}"
+    return proxy
 
 
 def _callback(*args):
